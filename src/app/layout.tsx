@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={satoshiFont.variable}>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased bg-reya-cod-gray text-reya-athens-gray">{children}</body>
     </html>
   );
 }

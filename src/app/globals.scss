@@ -1,17 +1,7 @@
 @use "tailwindcss";
-
-:root {
-  --background: #161616;
-  --foreground: #ededed;
-}
+@config "../../tailwind.config.ts";
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-satoshi), "Satoshi", sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-}
