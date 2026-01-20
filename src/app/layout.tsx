@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import type { ReactNode } from "react";
 import "./globals.scss";
+import { Aside } from "@/components/aside/aside";
+import { Footer } from "@/components/footer/footer";
+import { Header } from "@/components/header/header";
 
 const satoshiFont = localFont({
   src: [
@@ -23,7 +26,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={satoshiFont.variable}>
-      <body className="font-sans antialiased bg-reya-cod-gray text-reya-athens-gray">{children}</body>
+      <body className="font-sans font-medium antialiased bg-reya-cod-gray text-reya-athens-gray text-reya-gray">
+        <div className="h-screen flex flex-col">
+          <Header />
+          <div className="flex flex-1 min-h-0">
+            <Aside />
+            <main className="flex-1 bg-reya-cod-gray">{children}</main>
+          </div>
+          <Footer />
+        </div>
+      </body>
     </html>
   );
 }

@@ -6,6 +6,8 @@ const reyaColors = {
   "reya-cod-gray-2": "#0F0F0F",
   "reya-mine-shaft": "#222222",
   "reya-mine-shaft-2": "#323232",
+  "reya-mine-shaft-3": "#252525",
+  "reya-boulder": "#7B7B7B",
   "reya-gray": "#8D8D8D",
   "reya-athens-gray": "#F9F9FA",
   "reya-brink-pink": "#FF6991",
