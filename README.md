@@ -2,6 +2,8 @@
 
 Assignment for Reya - Real-time portfolio viewer for Reya DEX positions.
 
+Deployed on Vercel: **[Live Demo](https://case-study-reya-dex.vercel.app/)**
+
 ## Requirements
 
 - Node.js >= 18.18.0
@@ -123,19 +125,19 @@ src/
 ## 🔥 Development Progress
 
 ### Wireframe
-<img src="./docs-img/1-wireframe.png" width="500" alt="Wireframe">
+<img src="./docs-img/1-wireframe.png" width="502" alt="Wireframe">
 
 ### Initial Layout
-<img src="./docs-img/2-initial-layout.png" width="500" alt="Initial Layout">
+<img src="./docs-img/2-initial-layout.png" width="502" alt="Initial Layout">
 
 ### Layout with Navigation
-<img src="./docs-img/3-layout-navigation.png" width="500" alt="Layout with Navigation">
+<img src="./docs-img/3-layout-navigation.png" width="502" alt="Layout with Navigation">
 
 ### Data flow planning
-<img src="./docs-img/4-data-flow.png" width="500" alt="Data Flow">
+<img src="./docs-img/4-data-flow.png" width="502" alt="Data Flow">
 
 ### Testing positions re-rendering
-<img src="./docs-img/5-final-result.png" width="500" alt="Final Result">
+<img src="./docs-img/5-final-result.png" width="502" alt="Final Result">
 
 ### Final fixes
-<img src="./docs-img/6-final-fixes.png" width="500" alt="Final Fixes">
+<img src="./docs-img/6-final-fixes.png" width="502" alt="Final Fixes">

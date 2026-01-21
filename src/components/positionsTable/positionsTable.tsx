@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { useWsDex } from "@/contexts/WsDexContext";
+import { useContext, useEffect } from "react";
+import { WsDexContext } from "@/contexts/WsDexContext";
 import { apiGetMarketsSummary } from "@/services/marketDataApi";
 import { useActions } from "@/store/store.utils";
 import {
@@ -26,7 +26,7 @@ export function PositionsTable() {
   const error = useWalletError();
   const hasFetchedFromApi = useHasFetchedFromApi();
   const { updatePrices, setHasFetchedFromApi } = useActions(useWalletStore);
-  const { subscribeToChannel, unsubscribeFromChannel } = useWsDex();
+  const wsDex = useContext(WsDexContext);
 
   useEffect(() => {
     if (hasFetchedFromApi) return;
@@ -50,14 +50,14 @@ export function PositionsTable() {
 
   useEffect(() => {
     if (positions.length > 0) {
-      subscribeToChannel("prices");
+      wsDex?.subscribeToChannel("prices");
     } else {
-      unsubscribeFromChannel("prices");
+      wsDex?.unsubscribeFromChannel("prices");
     }
     return () => {
-      unsubscribeFromChannel("prices");
+      wsDex?.unsubscribeFromChannel("prices");
     };
-  }, [positions.length, subscribeToChannel, unsubscribeFromChannel]);
+  }, [positions.length, wsDex]);
 
   if (!walletAddress) return <TableState message="Enter a wallet address to view positions" />;
   if (loading) return <TableState message="Loading positions..." />;

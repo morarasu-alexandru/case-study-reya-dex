@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, type ReactNode, useContext, useEffect, useCallback, useRef } from "react";
+import { createContext, type ReactNode, useEffect, useCallback, useRef } from "react";
 import {
   connectDex,
   disconnectDex,
@@ -15,15 +15,7 @@ interface WsDexContextValue {
   unsubscribeFromChannel: (channel: Channel) => void;
 }
 
-const WsDexContext = createContext<WsDexContextValue | null>(null);
-
-export function useWsDex() {
-  const context = useContext(WsDexContext);
-  if (!context) {
-    throw new Error("useWsDex must be used within WsDexProvider");
-  }
-  return context;
-}
+export const WsDexContext = createContext<WsDexContextValue | null>(null);
 
 export function WsDexProvider({ children }: { children: ReactNode }) {
   const subscribedChannels = useRef<Set<Channel>>(new Set());
