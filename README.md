@@ -1,36 +1,141 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Reya Portfolio
 
-## Getting Started
+Assignment for Reya - Real-time portfolio viewer for Reya DEX positions.
 
-First, run the development server:
+## Requirements
+
+- Node.js >= 18.18.0
+- pnpm
+
+## 🚀 Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) and enter a wallet address to view positions.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Code Quality
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [Biome](https://biomejs.dev/) for linting and formatting
+- EditorConfig for consistent editor settings (line ending LF, indentation 2, spaces over tabs, etc.)
 
-## Learn More
+## 🔧 Solution Overview
 
-To learn more about Next.js, take a look at the following resources:
+### Real-Time Price Updates
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The application uses WebSocket to receive real-time price updates from the Reya DEX API. Key implementation details:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Batched Updates**: Incoming prices are buffered locally and flushed to the store every 1.5 seconds to prevent excessive re-renders
+2. **Smart Diffing**: Only prices that have actually changed are dispatched to the store
+3. **Direction Tracking**: Each price update calculates direction (up/down/neutral) for visual feedback
+4. **Selective Subscriptions**: Each `PositionRow` component subscribes only to its specific symbol's price using a Zustand selector, preventing unnecessary re-renders when other prices change
 
-## Deploy on Vercel
+### State Management
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Zustand was chosen for its simplicity and performance:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+walletStore
+├── data
+│   ├── walletAddress    # Current wallet being viewed
+│   ├── positions        # Array of positions from API
+│   ├── prices           # Record<symbol, MarketPrice> with direction
+│   ├── loading/error    # UI states
+│   └── isConnected      # WebSocket connection status
+└── actions
+    ├── updatePrices     # Batch update prices with direction calculation
+    ├── setPositions     # Set positions from API response
+    └── ...
+```
+
+### Design Decisions & Trade-offs
+
+| Decision | Rationale | Trade-off |
+|----------|-----------|-----------|
+| 1.5s batch interval | Balances responsiveness with performance | Slight delay in price updates |
+| Zustand over Redux | Simpler API, less boilerplate, built-in selectors | Less ecosystem/middleware |
+| Client-side only | Simpler architecture for real-time data | No SSR for initial prices |
+| Memo + selective selectors | Prevents cascade re-renders | Slightly more complex component code |
+
+## Testing the Functionality
+
+1. Run `pnpm dev` and open the app
+2. Enter a wallet address with positions (or use mock data if API unavailable)
+3. Observe the positions table updating with real-time prices
+4. Price direction is indicated by color: green (up), red (down), gray (neutral)
+5. Open DevTools → React DevTools to verify only affected rows re-render
+
+## 🧪 Testing Strategy
+
+No tests were implemented for this assignment, but here's the approach I would take:
+
+**Testing Pyramid:**
+
+1. **TypeScript** - Primary line of defense; strict typing prevents most runtime errors
+2. **Unit Tests** - Pure functions (batching, formatters), co-located with source files
+3. **Component Tests** - Vitest + React Testing Library for UI behavior
+4. **E2E Tests** - Playwright/Cypress for critical paths only
+
+## Deployment
+
+The app is deployable to Vercel with zero configuration:
+
+```bash
+vercel
+```
+
+Considerations:
+- Environment variables for API endpoints (production vs staging)
+- WebSocket connections are client-side only, no special server config needed
+
+## Monitoring Strategy
+
+- **Error Tracking**: Sentry for runtime errors and WebSocket failures
+- **Performance**: Web Vitals monitoring (LCP, FID, CLS)
+- **WebSocket Health**: Track connection drops, reconnection frequency
+- **API Latency**: Monitor position fetch and price update latency
+
+## 📚 Tech Stack
+
+- Next.js 16 with App Router
+- Tailwind CSS for styling
+- Zustand for state management
+- Axios for API requests
+- WebSocket for real-time price updates
+
+Custom Tailwind colors were configured using [Name that Color](https://chir.ag/projects/name-that-color) for consistent naming.
+
+## Structure
+
+```
+src/
+├── app/           # Next.js app router pages
+├── components/    # React components
+├── constants/     # Static config and data
+├── contexts/      # React context providers
+├── services/      # API and WebSocket services
+├── store/         # Zustand state management
+└── types/         # TypeScript types
+```
+
+## 🔥 Development Progress
+
+### Wireframe
+<img src="./docs-img/1-wireframe.png" width="500" alt="Wireframe">
+
+### Initial Layout
+<img src="./docs-img/2-initial-layout.png" width="500" alt="Initial Layout">
+
+### Layout with Navigation
+<img src="./docs-img/3-layout-navigation.png" width="500" alt="Layout with Navigation">
+
+### Data flow planning
+<img src="./docs-img/4-data-flow.png" width="500" alt="Data Flow">
+
+### Testing positions re-rendering
+<img src="./docs-img/5-final-result.png" width="500" alt="Final Result">
+
+### Final fixes
+<img src="./docs-img/6-final-fixes.png" width="500" alt="Final Fixes">

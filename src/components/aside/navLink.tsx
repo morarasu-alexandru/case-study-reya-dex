@@ -18,7 +18,7 @@ export const NavLink = ({ href, children }: NavLinkProps) => {
     <Link
       href={href}
       className={clsx(
-        "block py-0.5 px-2 text-xs transition-colors border-l",
+        "block py-[0.5625rem] px-2 text-xs transition-colors border-l",
         isActive
           ? "border-reya-athens-gray text-reya-athens-gray"
           : "border-transparent text-reya-gray hover:text-reya-athens-gray",

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { LogoIcon } from "@/components/icons/logoIcon";
 import { pageUrl } from "@/constants/routing";
 import { PageTitle } from "./pageTitle";
+import { WalletInputSection } from "./walletInputSection";
 
 export const Header = () => {
   return (
@@ -12,11 +13,11 @@ export const Header = () => {
       >
         <LogoIcon />
       </Link>
-      <div className="flex-1 flex justify-between items-center px-2">
-        <PageTitle />
-        <span className="text-xs font-bold bg-reya-mine-shaft-3 border border-reya-boulder rounded-lg py-[0.4375rem] px-2">
-          0x4cd...239x
-        </span>
+      <div className="flex-1 grid grid-cols-3 items-center px-2">
+        <div className="justify-self-start">
+          <PageTitle />
+        </div>
+        <WalletInputSection />
       </div>
     </header>
   );
