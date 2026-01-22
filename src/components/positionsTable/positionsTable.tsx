@@ -31,33 +31,33 @@ export function PositionsTable() {
   useEffect(() => {
     if (hasFetchedFromApi) return;
 
-    apiGetMarketsSummary()
-      .then((markets) => {
-        const prices: Record<string, MarketPrice> = {};
-        for (const market of markets) {
-          prices[market.symbol] = {
-            oraclePrice: market.throttledOraclePrice,
-            poolPrice: market.throttledPoolPrice,
-            updatedAt: market.updatedAt,
-            direction: "neutral",
-          };
-        }
-        updatePrices(prices);
-        setHasFetchedFromApi(true);
-      })
-      .catch(() => {});
+    // apiGetMarketsSummary()
+    //   .then((markets) => {
+    //     const prices: Record<string, MarketPrice> = {};
+    //     for (const market of markets) {
+    //       prices[market.symbol] = {
+    //         oraclePrice: market.throttledOraclePrice,
+    //         poolPrice: market.throttledPoolPrice,
+    //         updatedAt: market.updatedAt,
+    //         direction: "neutral",
+    //       };
+    //     }
+    //     updatePrices(prices);
+    //     setHasFetchedFromApi(true);
+    //   })
+    //   .catch(() => {});
   }, [hasFetchedFromApi, updatePrices, setHasFetchedFromApi]);
 
   useEffect(() => {
-    if (positions.length > 0) {
-      wsDex?.subscribeToChannel("prices");
-    } else {
-      wsDex?.unsubscribeFromChannel("prices");
+    wsDex?.subscribeToChannel("positions", walletAddress);
+    if (positions.length > 0 && walletAddress) {
+      wsDex?.subscribeToChannel("prices", walletAddress);
     }
     return () => {
       wsDex?.unsubscribeFromChannel("prices");
+      wsDex?.unsubscribeFromChannel("positions", walletAddress);
     };
-  }, [positions.length, wsDex]);
+  }, [positions.length, wsDex, walletAddress]);
 
   if (!walletAddress) return <TableState message="Enter a wallet address to view positions" />;
   if (loading) return <TableState message="Loading positions..." />;

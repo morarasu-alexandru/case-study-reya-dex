@@ -1,7 +1,9 @@
-import { ALL_PRICES_CHANNEL, RECONNECT_DELAY, REYA_WS_URL } from "@/constants/ws";
+import { ALL_POSITIONS_CHANNEL, ALL_PRICES_CHANNEL, RECONNECT_DELAY, REYA_WS_URL } from "@/constants/ws";
 import type { MarketPrice, PriceDirection } from "@/store/walletStore";
 import { useWalletStore } from "@/store/walletStore";
 import type { WebSocketMessage } from "@/types/websocket";
+import { useActions } from "@/store/store.utils";
+import type { Position } from "@/types/reya-api";
 
 const FLUSH_INTERVAL_MS = 1500;
 
@@ -86,6 +88,20 @@ export function connectDex(): void {
           ws?.send(JSON.stringify({ type: "pong", timestamp: message.timestamp }));
           return;
         }
+        const setPositions = useWalletStore.getState().actions.setPositions;
+        if (message.channel?.startsWith("/v2/wallet")) {
+
+          console.log('message', message);
+
+          console.log('message.data', message.data);
+          if (message.data) {
+            // @ts-expect-error
+            setPositions(message.data);
+          }
+          return
+        }
+
+
         if (message?.type === "channel_data" && Array.isArray(message.data)) {
           for (const priceData of message.data) {
             const { symbol, oraclePrice, poolPrice, updatedAt } = priceData;
@@ -135,9 +151,20 @@ export function subscribeToPricesChannel(): void {
   }
 }
 
-export function unsubscribeFromPricesChannel(): void {
-  pendingSubscriptions.delete(ALL_PRICES_CHANNEL);
+export function subscribeToPositionsChannel(address: string): void {
+  console.log('called here');
   if (ws && ws.readyState === WebSocket.OPEN) {
-    ws.send(JSON.stringify({ type: "unsubscribe", channel: ALL_PRICES_CHANNEL }));
+    ws.send(JSON.stringify({ type: "subscribe", channel: `${ALL_POSITIONS_CHANNEL}/${address}/positions` }));
+  } else {
+    pendingSubscriptions.add(ALL_POSITIONS_CHANNEL);
   }
 }
+
+
+export function unsubscribeFromPricesChannel(address?:string): void {
+  pendingSubscriptions.delete(ALL_PRICES_CHANNEL);
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({ type: "unsubscribe", channel: `${ALL_POSITIONS_CHANNEL}/${address}/positions` }));
+  }
+}
+

@@ -24,8 +24,8 @@ function TestAddressButton() {
   const handleClick = async () => {
     setWalletAddress(TEST_WALLET_ADDRESS);
     try {
-      const positions = await apiGetPositions(TEST_WALLET_ADDRESS);
-      setPositions(positions);
+      // const positions = await apiGetPositions(TEST_WALLET_ADDRESS);
+      // setPositions(positions);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to fetch positions";
       toast.error(message);

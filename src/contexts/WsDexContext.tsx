@@ -3,16 +3,16 @@
 import { createContext, type ReactNode, useEffect, useCallback, useRef } from "react";
 import {
   connectDex,
-  disconnectDex,
+  disconnectDex, subscribeToPositionsChannel,
   subscribeToPricesChannel,
   unsubscribeFromPricesChannel,
 } from "@/services/ws";
 
-type Channel = "prices";
+type Channel = "prices" | "positions";
 
 interface WsDexContextValue {
-  subscribeToChannel: (channel: Channel) => void;
-  unsubscribeFromChannel: (channel: Channel) => void;
+  subscribeToChannel: (channel: Channel, address?: string) => void;
+  unsubscribeFromChannel: (channel: Channel, address?: string) => void;
 }
 
 export const WsDexContext = createContext<WsDexContextValue | null>(null);
@@ -28,18 +28,35 @@ export function WsDexProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const subscribeToChannel = useCallback((channel: Channel) => {
+  const subscribeToChannel = useCallback((channel: Channel, address?: string) => {
+    console.log('got here?', );
+    console.log('channel', channel);
+    console.log('addresss', address);
     if (subscribedChannels.current.has(channel)) return;
+    switch (channel) {
+      case "positions":
+        address ? subscribeToPositionsChannel(address) : undefined;
+      case "prices":
+      default:
+        subscribeToPricesChannel();
+
+
+    }
     if (channel === "prices") {
-      subscribeToPricesChannel();
     }
     subscribedChannels.current.add(channel);
   }, []);
 
-  const unsubscribeFromChannel = useCallback((channel: Channel) => {
+  const unsubscribeFromChannel = useCallback((channel: Channel, address?: string) => {
     if (!subscribedChannels.current.has(channel)) return;
+
+
+
     if (channel === "prices") {
       unsubscribeFromPricesChannel();
+    }
+    if (channel === 'positions' && address) {
+      unsubscribeFromPricesChannel(address);
     }
     subscribedChannels.current.delete(channel);
   }, []);
