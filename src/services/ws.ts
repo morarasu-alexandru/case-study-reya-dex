@@ -93,7 +93,10 @@ export function connectDex(): void {
 
           console.log('message', message);
 
+          // @ts-expect-error
           console.log('message.data', message.contents);
+
+          // @ts-expect-error
           if (message.contents) {
             // @ts-expect-error
             setPositions(message.contents);
