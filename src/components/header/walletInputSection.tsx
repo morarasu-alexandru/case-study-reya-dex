@@ -71,8 +71,8 @@ function WalletBadge() {
       setWalletAddress(trimmedValue);
       if (isValidWalletAddress(trimmedValue)) {
         try {
-          const positions = await apiGetPositions(trimmedValue);
-          setPositions(positions.length > 0 ? positions : MOCK_POSITIONS);
+          // const positions = await apiGetPositions(trimmedValue);
+          // setPositions(positions.length > 0 ? positions : MOCK_POSITIONS);
         } catch (error) {
           const message = error instanceof Error ? error.message : "Failed to fetch positions";
           toast.error(message);
